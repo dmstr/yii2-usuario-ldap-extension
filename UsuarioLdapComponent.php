@@ -373,7 +373,7 @@ class UsuarioLdapComponent extends Component
         });
 
         Event::on(RecoveryController::class, FormEvent::EVENT_BEFORE_REQUEST, function (FormEvent $event) {
-            
+
             /**
              * After a user recovery request is sent, it checks if the email given is one of a LDAP user.
              * If the the uurlser is found and the parameter `allowPasswordRecovery` is set to FALSE, it redirect
@@ -399,7 +399,7 @@ class UsuarioLdapComponent extends Component
         }
 
         Event::on(SecurityController::class, FormEvent::EVENT_AFTER_LOGIN, function (FormEvent $event) {
-            
+
             /**
              * After a successful login if no LDAP user is found I create it.
              * Is the only point where I can have the user password in clear for existing users
@@ -423,7 +423,7 @@ class UsuarioLdapComponent extends Component
         }, null, false);
 
         Event::on(AdminController::class, UserEvent::EVENT_AFTER_CREATE, function (UserEvent $event) {
-            
+
             $user = $event->getUser();
             try {
                 $this->createLdapUser($user);
@@ -445,13 +445,13 @@ class UsuarioLdapComponent extends Component
         }, null, false);
 
         Event::on(AdminController::class, ActiveRecord::EVENT_BEFORE_UPDATE, function (UserEvent $event) {
-            
+
             $user = $event->getUser();
             $this->updateLdapUser($user);
         });
 
         Event::on(SettingsController::class, UserEvent::EVENT_AFTER_ACCOUNT_UPDATE, function (UserEvent $event) {
-            
+
             $user = $event->getUser();
 
             // Use the old username to find the LDAP user because it could be modified and in LDAP I still have the old one
@@ -492,7 +492,7 @@ class UsuarioLdapComponent extends Component
 
         Event::on(RecoveryController::class, ResetPasswordEvent::EVENT_AFTER_RESET,
             function (ResetPasswordEvent $event) {
-                
+
                 $token = $event->getToken();
                 if (!$token) {
                     $this->error('Token does not exist', $token);
@@ -524,7 +524,7 @@ class UsuarioLdapComponent extends Component
 
         // Delete LDAP user (run as last event)
         Event::on(AdminController::class, ActiveRecord::EVENT_BEFORE_DELETE, function (UserEvent $event) {
-            
+
             $user = $event->getUser();
             try {
                 $ldapUser = $this->findLdapUser($user->username, 'cn');
@@ -618,6 +618,7 @@ class UsuarioLdapComponent extends Component
     private function findLdapUser($username, $key, $ldapProvider = 'secondLdapProvider')
     {
         $ldapUser = $this->{$ldapProvider}->search()
+            ->users()
             ->where($this->userIdentificationLdapAttribute ?: $key, '=', $username)
             ->first();
 
