@@ -475,7 +475,7 @@ class UsuarioLdapComponent extends Component
             }
             if (!empty($user->password)) {
                 // If clear password is specified I update it also in LDAP
-                $ldapUser->setAttribute('userPassword', '{SHA}' . base64_encode(pack('H*', sha1($user->password))));
+                $ldapUser->setAttribute('userPassword', '{SHA}' . base64_encode(pack('H*', sha1((string) $user->password))));;
             }
 
             if (!$ldapUser->save()) {
@@ -513,7 +513,7 @@ class UsuarioLdapComponent extends Component
                 }
                 if (!empty($user->password)) {
                     // If clear password is specified I update it also in LDAP
-                    $ldapUser->setAttribute('userPassword', '{SHA}' . base64_encode(pack('H*', sha1($user->password))));
+                    $ldapUser->setAttribute('userPassword', '{SHA}' . base64_encode(pack('H*', sha1((string) $user->password))));
                 }
 
                 if (!$ldapUser->save()) {
@@ -657,7 +657,7 @@ class UsuarioLdapComponent extends Component
             $ldapUser->setAttribute($ldapAttr, $user->$userAttr);
         }
 
-        $ldapUser->setAttribute('userPassword', '{SHA}' . base64_encode(pack('H*', sha1($user->password))));
+        $ldapUser->setAttribute('userPassword', '{SHA}' . base64_encode(pack('H*', sha1((string) $user->password))));
 
         foreach (self::$mapUserARtoLDAPattr as $ldapAttr => $userAttr) {
             if ($user->isAttributeChanged($userAttr)) {
@@ -703,7 +703,7 @@ class UsuarioLdapComponent extends Component
         }
         if (!empty($user->password)) {
             // If clear password is specified I update it also in LDAP
-            $ldapUser->setAttribute('userPassword', '{SHA}' . base64_encode(pack('H*', sha1($user->password))));
+            $ldapUser->setAttribute('userPassword', '{SHA}' . base64_encode(pack('H*', sha1((string) $user->password))));
         }
 
         if (!$ldapUser->save()) {
